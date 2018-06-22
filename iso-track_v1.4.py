@@ -9,14 +9,18 @@ import os
 
 #%% settings
 
-os.chdir("E:/python1/iso-track")
+main_dir = "E:/python1/iso-track/"
+work_dir = "example/"
+
+os.chdir(main_dir)
 os.listdir(os.getcwd())
 
-video = "tadpole1.avi"
+video = main_dir + work_dir + "asellus-sample-1.mp4"
 
 start = 0 # start video after x minutes
-skip = 0 # number of frames to skip
-roi = True # make video only of region of interest / selected polygon
+skip = 0 # number of frames to skip (1 = every second frame, 2 = every third frame, ...)
+
+roi = False # make video only of region of interest / selected polygon (UNDER DEVELOPMENT)
 
 # detection settings
 kernelsize = 5 # for blurring
@@ -52,8 +56,8 @@ arena_mask = cv2.cvtColor(poly.mask, cv2.COLOR_BGR2GRAY)
 height, width, layers = frame.shape
 cap.release()
 
-
 rx,ry,rwidth,rheight = cv2.boundingRect(poly.points)
+cv2.imwrite(work_dir + "asellus_arena.png", poly.arena)    
 
 
 #%% background subtraction
@@ -61,9 +65,9 @@ rx,ry,rwidth,rheight = cv2.boundingRect(poly.points)
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
 #fourcc = cv2.VideoWriter_fourcc('F','M','P','4')
 if roi == True:
-    video_out = cv2.VideoWriter("video_out.avi", fourcc, 25, (rwidth, rheight))
+    video_out = cv2.VideoWriter(work_dir + "video_out.avi", fourcc, 25, (rwidth, rheight))
 else:
-    video_out = cv2.VideoWriter("video_out.avi", fourcc, 25, (width, height), False)
+    video_out = cv2.VideoWriter(work_dir + "video_out.avi", fourcc, 25, (width, height), False)
 
 cap = cv2.VideoCapture(video)
 fgbg = cv2.createBackgroundSubtractorMOG2()
@@ -108,8 +112,7 @@ while(cap.isOpened()):
         scatter_l = list(map(avgit, cons))
         center=np.array(scatter_l)
     
-    # use difference between two frames???
-    
+        # collect center points of detected contours in data frame    
         if idx1 > start * 1800 and center.shape[0]>0:
             f = pd.DataFrame(center.reshape(center.shape[0],center.shape[2]), columns = list("xy"))
             if skip > 0:
@@ -119,16 +122,16 @@ while(cap.isOpened()):
 #            ft = ft.append(tp.locate(mask, 11, invert=True))
         df=df.append(f)
   
+        # show only selected arena
         img = cv2.addWeighted(arena, 1, mask, 0.5, 0)
-        
         if roi == True:
             frame_out = img[ry:ry+rwidth,rx:rx+rheight]      
         else:
             frame_out = img
 
+        # show and write new frames
         cv2.namedWindow('overlay' ,cv2.WINDOW_NORMAL)
         cv2.imshow('overlay', frame_out)
-
         video_out.write(frame_out)
         
         if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -140,11 +143,14 @@ cv2.destroyAllWindows()
 
 #%% movement analysis and plotting
 
-traj = tp.link_df(df, 300, memory=300) #, neighbor_strategy="KDTree", link_strategy="recursive"
+# find trajectories - check http://soft-matter.github.io/trackpy/v0.3.0/generated/trackpy.link_df.html for all options
+traj = tp.link_df(df, 50, memory=300, neighbor_strategy="KDTree", link_strategy="recursive")
 
-traj.to_csv("tadpole.csv", sep='\t')
-
+# plot trajectories
 plot = tp.plot_traj(traj, superimpose=arena)
 fig = plot.get_figure()
-fig.savefig("tadpole.png")
+fig.savefig("/trajectories.png")
+
+# save trajectories to csv
+traj.to_csv("tadpole.csv", sep='\t')
 

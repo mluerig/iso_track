@@ -22,7 +22,7 @@ class PolygonDrawer(object):
         self.current = (0, 0) # Current position, so we can draw the line-in-progress
         self.points = [] # List of points defining our polygon
 
-# mouse action
+    # mouse action
     def on_mouse(self, event, x, y, buttons, user_param):
         # Mouse callback that gets called for every mouse event (i.e. moving, clicking, etc.)
 
@@ -41,7 +41,7 @@ class PolygonDrawer(object):
             print("Completing polygon with %d points." % len(self.points))
             self.done = True
 
-# draw lines
+    # draw lines
     def run(self, image):
         # Let's create our working window and set a mouse callback to handle events
         cv2.namedWindow(self.window_name, flags=cv2.WINDOW_AUTOSIZE)
@@ -66,7 +66,7 @@ class PolygonDrawer(object):
             if cv2.waitKey(50) == 27: # ESC hit
                 self.done = True
 
-# create final arena
+        # create final arena
         canvas = image
         
         # of a filled polygon
@@ -81,11 +81,10 @@ class PolygonDrawer(object):
             cv2.fillPoly(zeros, np.array([self.points]), FILL_COLOR)
             
         self.mask = zeros
-        canvas = cv2.addWeighted(copy.deepcopy(canvas), .8, red, 0.2, 0)
+        self.arena = cv2.addWeighted(copy.deepcopy(canvas), .8, red, 0.2, 0)
 
-        # write and show arena
-        cv2.imwrite("polygon.png", canvas)    
-        cv2.imshow(self.window_name, canvas)
+        # show arena
+        cv2.imshow(self.window_name, self.arena)
 
         # Waiting for the user to press any key and return points
         cv2.waitKey()
@@ -93,6 +92,5 @@ class PolygonDrawer(object):
         print("Polygon = %s" % self.points)
 
         self.points = np.array([self.points])
-
 
 
