@@ -17,8 +17,8 @@ os.listdir(os.getcwd())
 
 video = main_dir + work_dir + "asellus-sample-1.mp4"
 
-start = 0 # start video after x minutes
-skip = 0 # number of frames to skip (1 = every second frame, 2 = every third frame, ...)
+start = 0 # start frame capture after x minutes | use to cut out handling time in the beginning
+skip = 0 # number of frames to skip (1 = every second frame, 2 = every third frame, ...) | useful when organisms are moving too slow
 
 roi = False # make video only of region of interest / selected polygon (UNDER DEVELOPMENT)
 
@@ -149,8 +149,8 @@ traj = tp.link_df(df, 50, memory=300, neighbor_strategy="KDTree", link_strategy=
 # plot trajectories
 plot = tp.plot_traj(traj, superimpose=arena)
 fig = plot.get_figure()
-fig.savefig("/trajectories.png")
+fig.savefig(work_dir + "trajectories.png")
 
 # save trajectories to csv
-traj.to_csv("tadpole.csv", sep='\t')
+traj.to_csv(work_dir + "trajectories.csv", sep='\t')
 
