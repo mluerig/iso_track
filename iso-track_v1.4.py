@@ -20,7 +20,7 @@ video = main_dir + work_dir + "asellus-sample-1.mp4"
 start = 0 # start frame capture after x minutes | use to cut out handling time in the beginning
 skip = 0 # number of frames to skip (1 = every second frame, 2 = every third frame, ...) | useful when organisms are moving too slow
 
-roi = False # make video only of region of interest / selected polygon (UNDER DEVELOPMENT)
+roi = True # make video only of region of interest / selected polygon
 
 # detection settings
 kernelsize = 5 # for blurring
@@ -65,7 +65,7 @@ cv2.imwrite(work_dir + "asellus_arena.png", poly.arena)
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
 #fourcc = cv2.VideoWriter_fourcc('F','M','P','4')
 if roi == True:
-    video_out = cv2.VideoWriter(work_dir + "video_out.avi", fourcc, 25, (rwidth, rheight))
+    video_out = cv2.VideoWriter(work_dir + "video_out.avi", fourcc, 25, (rwidth, rheight), False)
 else:
     video_out = cv2.VideoWriter(work_dir + "video_out.avi", fourcc, 25, (width, height), False)
 
@@ -125,7 +125,7 @@ while(cap.isOpened()):
         # show only selected arena
         img = cv2.addWeighted(arena, 1, mask, 0.5, 0)
         if roi == True:
-            frame_out = img[ry:ry+rwidth,rx:rx+rheight]      
+            frame_out = img[ry:ry+rheight,rx:rx+rwidth]      
         else:
             frame_out = img
 
