@@ -62,7 +62,7 @@ cv2.imwrite(work_dir + "asellus_arena.png", poly.arena)
 
 #%% background subtraction
 
-fourcc = cv2.VideoWriter_fourcc(*'XVID')
+fourcc = cv2.VideoWriter_fourcc(*'DIVX')
 #fourcc = cv2.VideoWriter_fourcc('F','M','P','4')
 if roi == True:
     video_out = cv2.VideoWriter(work_dir + "video_out.avi", fourcc, 25, (rwidth, rheight), False)
