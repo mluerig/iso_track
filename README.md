@@ -2,7 +2,7 @@
 
 ## introduction
 
-**iso-track** (isopod-tracking) is a semi-automated script that requires some user interaction to quantify movement of isopods (or other organisms) from video files. idea was based on https://github.com/approbatory/motion-tracker and implemented with https://github.com/soft-matter/trackpy. arena selector is based on Dan Masek's answer to https://stackoverflow.com/questions/37099262/drawing-filled-polygon-using-mouse-events-in-open-cv-using-python
+**iso-track** (isopod-tracking) is a semi-automated script that requires some user interaction to quantify movement of isopods (or other organisms) from video files. idea was based on [approbatory/motion-tracker](https://github.com/approbatory/motion-tracker) and implemented with [soft-matter/trackpy](https://github.com/soft-matter/trackpy). Arena selector is based on Dan Masek's answer to [this question](https://stackoverflow.com/questions/37099262/drawing-filled-polygon-using-mouse-events-in-open-cv-using-python)
 
 **Please feel free to get in touch with me if you need help running the script or have questions about customizing it for your own study-system/organism: [contact @ eawag](http://www.eawag.ch/en/aboutus/portrait/organisation/staff/profile/moritz-luerig/show/)**
 
