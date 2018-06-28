@@ -17,6 +17,10 @@
 
 **Please feel free to get in touch with me if you need help running the script or have questions about customizing it for your own study-system/organism: [contact @ eawag](http://www.eawag.ch/en/aboutus/portrait/organisation/staff/profile/moritz-luerig/show/)**
 
+
+<img src="assets/tracked_isopods.gif" width="50%" /><img src="assets/tracks.png" width="50%" /> 
+
+
 ---
 
 ## installation
