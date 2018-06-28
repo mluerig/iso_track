@@ -13,13 +13,16 @@
 **required software:**
 
 - python (3.6)
-- opencv (3.3.1) + dependencies
-- trackpy
+- opencv (3.3.1) + dependencies (more info here: https://stackoverflow.com/questions/23119413/how-do-i-install-python-opencv-through-conda)
+- trackpy (more info here http://soft-matter.github.io/trackpy/v0.3.0/installation.html)
 
 install, for example, with anaconda (https://www.anaconda.com/download/):
 
 ```
-conda install opencv numpy pandas trackpy
+conda update conda
+conda install numpy pandas 
+conda install -c conda-forge opencv 
+conda install -c soft-matter trackpy
 ```
 
 IMPORTANT: The script is not standalone, so a python interpreter needs to be used to modify and execute the script (e.g. [Spyder](https://github.com/spyder-ide/spyder)). Directories and input data need to be specified beforehand inside the script. At some point in the future I may provide a standalone executable version of the program.
