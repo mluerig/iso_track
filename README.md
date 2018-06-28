@@ -2,7 +2,7 @@
 
 ## introduction
 
-**iso-track** (isopod-tracking) is a semi-automated script that requires some user interaction to quantify movement of isopods (or other organisms) from video files. idea was based on [approbatory/motion-tracker](https://github.com/approbatory/motion-tracker) and implemented with [soft-matter/trackpy](https://github.com/soft-matter/trackpy). Arena selector is based on Dan Masek's answer to [this question](https://stackoverflow.com/questions/37099262/drawing-filled-polygon-using-mouse-events-in-open-cv-using-python)
+**iso-track** (**iso**pod-**track**ing) is a semi-automated script to quantify movement of animals in videos. It has been used with the with the freshwater isopod *Asellus aquaticus* (for the scientific background refer to http://luerig.net/Research/#Isopods). The idea is based on [approbatory/motion-tracker](https://github.com/approbatory/motion-tracker) and was implemented with [soft-matter/trackpy](https://github.com/soft-matter/trackpy). Arena selector is based on Dan Masek's answer to [this question](https://stackoverflow.com/questions/37099262/drawing-filled-polygon-using-mouse-events-in-open-cv-using-python)
 
 **Please feel free to get in touch with me if you need help running the script or have questions about customizing it for your own study-system/organism: [contact @ eawag](http://www.eawag.ch/en/aboutus/portrait/organisation/staff/profile/moritz-luerig/show/)**
 
@@ -26,7 +26,6 @@ conda install -c soft-matter trackpy
 ```
 
 IMPORTANT: The script is not standalone, so a python interpreter needs to be used to modify and execute the script (e.g. [Spyder](https://github.com/spyder-ide/spyder)). Directories and input data need to be specified beforehand inside the script. At some point in the future I may provide a standalone executable version of the program.
-
 
 ---
 
