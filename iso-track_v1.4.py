@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+"""
+Created: 2018/06/22
+Last Update: 2018/06/28
+Version 0.1.4
+@author: Moritz Lürig
+"""
+
+
 #%%
 from __future__ import division, unicode_literals, print_function  # for compatibility with Python 2 and 3
 import numpy as np
