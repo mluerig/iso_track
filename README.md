@@ -48,8 +48,9 @@ IMPORTANT: The script is not standalone, so a python interpreter needs to be use
 ... one code cell/lense at a time (cells are denoted by "#%%" and create a horizontal line in most IDEs)
 
 1. load iso-track.py script
-2. configure your directories and video settings (you can come back later if you need to change e.g. the kernel size or thresholding value)
-3. import video_utils script (just a collection of custom functions we need to draw the arena)
-4. draw arena. running this section will open a window, where you can select the arena to be included by left clicking. right click will complete the polygon and show you the result (green is included, red excluded in the motion analysis). 
-5. open the video file. reads frame by frame (or every nth frame, if you chose to skip frames at 2.). shows you the live process (everything detected as moving gets white overlay) and saves the detected movements to a pandas dataframe. video of overlays is saved as well
-6. calculates the trajectories. here you can play around a lot - see [trackpy reference ](http://soft-matter.github.io/trackpy/v0.3.0/generated/trackpy.link_df.html). e.g. the larger the search range or history is, the more challenging it is for the algorithm to find a solution, especially if you have many moving objects in your video. if you have only one, it should be ok to go to high values
+2. configure your directories 
+3. video and detection settings. `blur_kern`, `blur_thresh` and `backgr_thresh` will have the greatest effect on your results. `skip` frames if your organisms are moving too slow, and use `min_area` to exclude more noise. use `dilate_kern` for finetuning. you can (and should) come back here often to improve your results
+4. import video_utils script (just a collection of custom functions we need to draw the arena)
+5. draw arena. running this section will open a window, where you can select the arena to be included by left clicking. right click will complete the polygon and show you the result (green is included, red excluded in the motion analysis). 
+6. open the video file. reads frame by frame (or every nth frame, if you chose to skip frames at 2.). shows you the live process (everything detected as moving gets white overlay) and saves the detected movements to a pandas dataframe. video of overlays is saved as well
+7. calculates the trajectories. here you need to find out what works for your case - see [trackpy reference ](http://soft-matter.github.io/trackpy/v0.3.0/generated/trackpy.link_df.html). e.g. the larger the `search_range` or `memory` is, the more challenging it is for the algorithm to find a solution, especially if you have many moving objects in your video. if you have only one, it should be ok to go to high values. the filtering step is optional, but can be useful to eliminate spurious trajectories
