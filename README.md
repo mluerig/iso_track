@@ -15,8 +15,11 @@
 
 **iso_track** (**iso**pod_**track**ing) is a semi-automated script to quantify movement of animals in videos using foreground-background detection in response to pixel-motion ([opencv fgbg-subtractor](https://docs.opencv.org/3.3.0/db/d5c/tutorial_py_bg_subtraction.html)). It has been sucessfully used to quantify movement of the freshwater isopod *Asellus aquaticus* (for the scientific background refer to http://luerig.net/Research/#Isopods) and threespine stickleback (*Gasterosteus aculeatus*). The idea is based on [approbatory/motion-tracker](https://github.com/approbatory/motion-tracker) and was implemented with [soft-matter/trackpy](https://github.com/soft-matter/trackpy). Arena selector is based on Dan Masek's answer to [this SO question](https://stackoverflow.com/questions/37099262/drawing-filled-polygon-using-mouse-events-in-open-cv-using-python).
 
-**Example of iso_track motion detection in a laboratory foraging experiment (for higher quality go to https://vimeo.com/283075068).** Note that the markup serves the purpose of evaluating the overall detection quality. The trackpy routine does the actual work, and removes all the glitches (flickering isopod or fish overlays). 
-<img src="assets/iso_track_demo.gif" width="100%" />
+
+<figure>
+  <img src="assets/iso_track_demo.gif" width="100%" />
+  <figcaption>Example of iso_track motion detection in a laboratory foraging experiment (for higher quality go to https://vimeo.com/283075068). Note that the markup serves the purpose of evaluating the overall detection quality. The trackpy routine does the actual work, and removes all the glitches (flickering isopod or fish overlays).</figcaption>
+</figure>
 
 The script uses different *modules* to quantify movement of different animals at the same time. In the given example, the goal is to quantify isopod movement in response to movements of a predatory fish (stickleback). However, the two movement patterns are very different and would be difficult to detect from a single routine. So each animal has its own code-module that contains the necessary adjustments of the detected foreground. 
 
