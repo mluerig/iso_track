@@ -25,7 +25,7 @@ The script uses different *modules* to quantify movement of different animals at
 |:--:| 
 |**Example of iso_track output. Left:** fish movement over 15 minutes (from green to blue: earlier to later in time). Most glitches have been removed to this step. The trajectories can be smoothed (later in R or Python), e.g. by averaging over multiple frames per second. **Right:**  Summary of fish and isopod movement. This figure shows how much all isopods have moved (green line: the sum of the movement of all isopods in one second) and how much the fish has moved (red line: mean fish movement in one second).|
 
-**The code can be easily adapted to quantifiy movement of other animals in different environments. Please feel free to get in touch with me if you need help running the script or have questions about customizing it for your own study-system/organism: [moritz lürig @ eawag](http://www.eawag.ch/en/aboutus/portrait/organisation/staff/profile/moritz-luerig/show/)**
+**It's easy to add a module that can quantifiy movement of other animals in different environments. Please feel free to get in touch with me if you need help running the script or have questions about customizing it for your own study-system: [moritz lürig @ eawag](http://www.eawag.ch/en/aboutus/portrait/organisation/staff/profile/moritz-luerig/show/)**
 
 ---
 
@@ -46,7 +46,7 @@ conda install -c conda-forge opencv
 conda install -c soft-matter trackpy
 ```
 
-IMPORTANT: The script is not standalone, so a python interpreter has to be used to modify and execute the script (e.g. [Spyder](https://github.com/spyder-ide/spyder)). Directories and input data need to be specified beforehand inside the script. At some point in the future I may provide a standalone executable version of the program.
+**IMPORTANT: The script is not executable standalone, so a python interpreter has to be used to modify and execute the script (e.g. [Spyder](https://github.com/spyder-ide/spyder)). Directories and input data need to be specified beforehand inside the script. At some point in the future I may provide a standalone executable version of the program.**
 
 ---
 
