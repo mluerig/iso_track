@@ -52,6 +52,7 @@ conda install -c soft-matter trackpy
 
 ## running the script... 
 ... one code cell/lense at a time (cells are denoted by "#%%" and create a horizontal line in most IDEs)
+
 (refer to the annotation inside the script for more details)
 
 1. download [iso_track.py](iso_track.py) and [iso_track_modules.py](iso_track_moduls.py) scripts into your current working directory 
