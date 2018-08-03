@@ -23,7 +23,7 @@ The script uses different *modules* to quantify movement of different animals at
 
 | <img src="assets/trajectories.png" width="50%"/><img src="assets/movement.png" width="50%" /> | 
 |:--:| 
-|**Example of iso_track output. Left:** fish movement over 15 minutes (from green to blue: earlier to later in time). Most glitches have been removed to this step. The trajectories can be smoothed (later in R or Python), e.g. by averaging over multiple frames per second. **Right:**  Summary of fish and isopod movement. This figure shows how much isopods (green line: the sum of the movement of all isopods in one second) and fish (red line: mean fish movement in one second).|
+|**Example of iso_track output. Left:** fish movement over 15 minutes (from green to blue: earlier to later in time). Most glitches have been removed to this step. The trajectories can be smoothed (later in R or Python), e.g. by averaging over multiple frames per second. **Right:**  Summary of fish and isopod movement. This figure shows how much all isopods have moved (green line: the sum of the movement of all isopods in one second) and how much the fish has moved (red line: mean fish movement in one second).|
 
 **The code can be easily adapted to quantifiy movement of other animals in different environments. Please feel free to get in touch with me if you need help running the script or have questions about customizing it for your own study-system/organism: [moritz lürig @ eawag](http://www.eawag.ch/en/aboutus/portrait/organisation/staff/profile/moritz-luerig/show/)**
 
