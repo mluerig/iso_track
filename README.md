@@ -55,7 +55,7 @@ conda install -c soft-matter trackpy
 
 (refer to the annotation inside the script for more details)
 
-1. download [iso_track.py](iso_track.py) and [iso_track_modules.py](iso_track_moduls.py) scripts into your current working directory 
+1. download [iso_track.py](iso_track.py) and [iso_track_modules.py](iso_track_modules.py) scripts into your current working directory 
 2. open iso_track.py, configure your current wd with `os. chdir()` and import the modules
 3. configure video and detection settings. `backgr_thresh` will have the greatest effect on your results, as it defines the sensitivity of the foreground-background detector. lower values increase sensitivity (i.e. more likely to detect something), but also increase noise. `skip` frames if your organisms are moving too slow. configure the modules separately: the blurring kernels (`blur_kern`) and iterations  (`blur_iter`) will smoothe the detected contours. `min_length` and `max_length` can be to exclude more noise. `shadow` detection improves results but slowes the detection. you can (and should) come back here often to improve your results
 4. draw arena (will remove a lot of nois). running this section will open a window, where you can select the arena to be included by left clicking. right click will complete the polygon and show you the result (green is included, red excluded in the motion analysis). 
