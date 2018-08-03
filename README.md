@@ -50,12 +50,13 @@ conda install -c soft-matter trackpy
 
 ---
 
-## running the script...
+## running the script... 
 ... one code cell/lense at a time (cells are denoted by "#%%" and create a horizontal line in most IDEs)
+(refer to the annotation inside the script for more details)
 
-1. load iso-track.py script
-2. configure your directories 
-3. video and detection settings. `backgr_thresh` will have the greatest effect on your results, as it defines the sensitivity of the foreground-background detector. lower values increase sensitivity (i.e. more likely to detect something), but also increase noise. `skip` frames if your organisms are moving too slow. configure the modules separately: the blurring kernels (`blur_kern`) and iterations  (`blur_iter`) will smoothe the detected contours. `min_length` and `max_length` can be to exclude more noise. `shadow` detection improves results but slowes the detection. you can (and should) come back here often to improve your results
-4. draw arena - will remove a lot of noise. running this section will open a window, where you can select the arena to be included by left clicking. right click will complete the polygon and show you the result (green is included, red excluded in the motion analysis). 
+1. download [iso_track.py](iso_track.py) and [iso_track_modules.py](iso_track_moduls.py) scripts into your current working directory 
+2. open iso_track.py, configure your current wd with `os. chdir()` and import the modules
+3. configure video and detection settings. `backgr_thresh` will have the greatest effect on your results, as it defines the sensitivity of the foreground-background detector. lower values increase sensitivity (i.e. more likely to detect something), but also increase noise. `skip` frames if your organisms are moving too slow. configure the modules separately: the blurring kernels (`blur_kern`) and iterations  (`blur_iter`) will smoothe the detected contours. `min_length` and `max_length` can be to exclude more noise. `shadow` detection improves results but slowes the detection. you can (and should) come back here often to improve your results
+4. draw arena (will remove a lot of nois). running this section will open a window, where you can select the arena to be included by left clicking. right click will complete the polygon and show you the result (green is included, red excluded in the motion analysis). 
 5. everything is set up now - run the video capture! reads frame by frame (or every nth frame, if you chose to skip frames at 2.). shows you the live process (everything detected as moving gets white overlay) and saves the detected movements to a pandas dataframe. video of overlays is saved as well
 6. calculates the trajectories. here you need to find out what works best for your case - see [trackpy reference ](http://soft-matter.github.io/trackpy/v0.3.0/generated/trackpy.link_df.html). e.g. the larger the `search_range` or `memory` is, the more challenging it is for the algorithm to find a solution, especially if you have many moving objects in your video. if you have only one, it should be ok to go to high values. the filtering step is optional, but can be useful to eliminate spurious trajectories. saves pictures and tables of trajectories to your main working dir.
