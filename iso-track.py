@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 Created: 2018/06/22
-Last Update: 2018/06/29
-Version 0.1.5
+Last Update: 2018/08/03
+Version 0.2
 @author: Moritz Lürig
 """
 
@@ -11,193 +11,163 @@ from __future__ import division, unicode_literals, print_function  # for compati
 import numpy as np
 import pandas as pd
 import trackpy as tp
+import matplotlib.pyplot as plt
 import cv2
 import os
 
-
 #%% directories
 
-os.chdir("E:\\python1\\iso-track")
-main_dir = "E:\\python1\\iso-track\\example"
-video_in = "E:\\python1\\iso-track\\example\\asellus-sample-1.mp4"
+os.chdir("E:\\python1\\iso_track")
+main_dir = "E:\\python1\\iso_track\\example"
+video_path = "E:\\python1\\iso_track\\example\\iso_track_example_vid.mp4"
+
+video_name = os.path.splitext(os.path.basename(video_path))[0]
+
+from iso_track_modules import polygon_drawer, video_info, video_time, capture_feedback # support modules
+from iso_track_modules import fish_module, isopod_module # analysis modules
 
 #%% settings
 
-video_name = os.path.splitext(os.path.basename(video_in))[0]
-video_out = video_name + "_out.avi"
-
-# video settings
-
+# video settings 
 start = 0 # MINUTES wait before capture after is started | use to cut out handling time in the beginning
-skip = 2 # nFRAMES to skip (1 = capture every second frame, 2 = every third frame, ...) | useful when organisms are moving too slow
+skip = 4 # nFRAMES to skip (1 = capture every second frame, 2 = every third frame, ...) | useful when organisms are moving too slow
 roi = False # make video only of region of interest / selected polygon
-wait = 7.5 # | MINUTES how long can organism sit still
-
-# detection settings
+wait = 2.5 # | MINUTES how long can organism sit still
+scale = 4.315 # px/mm
 
 # background-subtractor
-backgr_thresh = 12 # lower = more of organism is detected (+ more noise)
-shadows = True # detect shadows
-min_area=50 # | minimum px area to be included 
+backgr_thresh = 10 # lower = more of organism is detected (+ more noise)
+
+# fish module
+blur_kern_fish = 25 # for blurring | higher = more coarsely grained 
+blur_thresh_fish = 60 # thresholding after blurring | higher = smaller area
+min_length_fish = 100 # | minimum ellupse length to be included 
+shadows_fish = True
+
+# isopod module
+blur_kern_iso = 25 # for blurring | higher = more coarsely grained 
+blur_thresh_iso = 40 # thresholding after blurring | higher = smaller area
+max_length_iso = 80 # | minimum ellipse length to be included 
+min_length_iso = 15
+shadows_isopod = False
+
+#%% extract video information, add arenas, configure video output
+
+v = video_info(video_path)
+
+arena = polygon_drawer(v.name, main_dir)      
+arena.run(v.frame)
+
+fourcc = cv2.VideoWriter_fourcc(*"DIVX")
+video_out_writer = cv2.VideoWriter(os.path.join(main_dir,  v.name + "_out.avi"), fourcc, v.fps, (v.width, v.height), True)
+ 
+fgbg = cv2.createBackgroundSubtractorMOG2(history = int((wait*60) * (v.fps / skip)), varThreshold = int(backgr_thresh), detectShadows = True)
 
 
-#blurring
-blur_kern = 10 # for blurring | higher = more coarsely grained 
-blur_thresh = 90 # thresholding after blurring | higher = smaller area
-kern = np.ones((blur_kern,blur_kern))/(blur_kern**2)
-ddepth = -1
+#%%
 
-#add borders to mask
-dilate_kern = 7
-dilate_iter = 2
+# intiate
+idx1, idx2 = (0,0)
+df_fish, df_isopod  = ( pd.DataFrame(),pd.DataFrame())
+cap = cv2.VideoCapture(video_path)
 
-#%% import and define custom functions
-
-import video_utils
-from video_utils import PolygonDrawer
-
-def avgit(x):
-    return x.sum(axis=0)/np.shape(x)[0]
-def blur(image):
-    return cv2.filter2D(image,ddepth,kern)
-
-#%% access video and draw arena
-
-# draw arena
-cap = cv2.VideoCapture(video_in)
-idx = 0
+# start
 while(cap.isOpened()):
-    idx = idx + 1
-    # extract frame from video stream
-    ret, frame = cap.read()
-    if idx == 10:
-        break
-poly = PolygonDrawer(video_in)
-poly.run(frame)
-arena_mask = cv2.cvtColor(poly.mask, cv2.COLOR_BGR2GRAY)
-height, width, layers = frame.shape
-
-cap.release()
-
-rx,ry,rwidth,rheight = cv2.boundingRect(poly.points)
-cv2.imwrite(os.path.join(main_dir, video_name + "_arena.png"), poly.arena)    
-
-
-#%% background subtraction
-
-fourcc = cv2.VideoWriter_fourcc(*'DIVX')
-#fourcc = cv2.VideoWriter_fourcc('F','M','P','4')
-
-if roi == True:
-    video_out_writer = cv2.VideoWriter(os.path.join(main_dir,  video_out), fourcc, 25, (rwidth, rheight), False)
-else:
-    video_out_writer = cv2.VideoWriter(os.path.join(main_dir,  video_out), fourcc, 25, (width, height), False)
-
-cap = cv2.VideoCapture(video_in)
-
-nframes = cap.get(cv2.CAP_PROP_FRAME_COUNT) 
-fps = cap.get(cv2.CAP_PROP_FPS)
-vid_length = str(int(( nframes / fps)/60)).zfill(2) + ":" +str(int((((nframes / fps)/60)-int((nframes / fps)/60))*60)).zfill(2)
-
-history = (wait*60) * (fps / skip)
-fgbg = cv2.createBackgroundSubtractorMOG2(history = int(history), varThreshold = int(backgr_thresh), detectShadows = shadows)
-idx1 = 0
-idx2 = 0
-df = pd.DataFrame()
-ft = pd.DataFrame()
-
-while(cap.isOpened()):
-
     
-    # start video capture (after x minutes)
-    ret, frame = cap.read()
+    # read video 
+    ret, frame = cap.read()     
     capture = False
-    
     if ret==False:
         break
-
-    idx1 = idx1 + 1  
-    idx2 = idx2 + 1
-    if idx2 >= skip:
-        idx2 = 0
-        
-    mins = str(int((idx1 / fps)/60)).zfill(2)
-    secs = str(int((((idx1 / fps)/60)-int(mins))*60)).zfill(2)
     
-    if idx1 > start * 1800 and idx2 == 0:
+    # indexing 
+    idx1, idx2 = (idx1 + 1,  idx2 + 1)    
+    if idx2 == skip:
+        idx2 = 0    
         
+    # engange  fgbg-algorithm shortly before capturing 
+    if idx1 > (start * v.fps * 60) - (3*v.fps):
+        fgmask = fgbg.apply(frame)
+        frame_out = frame
+        
+    # start modules after x minutes
+    if idx1 > (start * v.fps * 60) and idx2 == 0:
         capture = True
-        
-        # read arena
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        arena = np.bitwise_and(gray, arena_mask)
                
-        # bg-fg subtractor
-        fgmask = fgbg.apply(arena)
-        
-        # find contours
-        mask = blur(fgmask)
-        ret, thresh = cv2.threshold(mask, blur_thresh, 255, cv2.THRESH_BINARY)
-        morph = cv2.dilate(thresh,np.ones((dilate_kern,dilate_kern),np.uint8),iterations = dilate_iter)
-        contours = cv2.findContours(morph, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
-        contours = contours[1]
-        
-        # filter contours
-        contours_good=[]
-        for cont in contours:
-            area = cv2.contourArea(cont)
-            if area > min_area:
-                contours_good.append(cont)
-
-        # contour centerpoints
-        scatter_l = list(map(avgit, contours_good))
-        center=np.array(scatter_l)
-    
-        # collect center points of detected contours in data frame    
-        if idx1 > start * 1800 and center.shape[0]>0:
-            f = pd.DataFrame(center.reshape(center.shape[0],center.shape[2]), columns = list("xy"))
+        # =============================================================================
+        # FISH MODULE
+        # =============================================================================
+        fish = fish_module(frame, fgmask, shadows_fish, blur_kern_fish, blur_thresh_fish, min_length_fish)   
+        if not fish.empty :
+            f = pd.DataFrame(data=fish.center, columns = list("xy"))
             if skip > 0:
                 f["frame"] = idx1/skip         
             else:
                 f["frame"] = idx1        
-#            ft = ft.append(tp.locate(mask, 11, invert=True))
-        df=df.append(f)
-  
-        # show only selected arena
-        img = cv2.addWeighted(arena, 1, thresh, 0.5, 0)
-        if roi == True:
-            frame_out = img[ry:ry+rheight,rx:rx+rwidth]      
-        else:
-            frame_out = img
+            df_fish=df_fish.append(f)      
+        frame_out = fish.draw(frame_out, ["contour", "ellipse", "text"])
 
-        # show and write new frames
+        
+        # =============================================================================
+        # ISOPOD MODULE
+        # =============================================================================
+        if not fish.empty:
+            fgmask = np.bitwise_and(fgmask, fish.box) # exclude fish area
+        
+        isopod = isopod_module(frame, fgmask, shadows_isopod, blur_kern_iso, blur_thresh_iso, min_length_iso, max_length_iso, arena.mask_gray)  
+        if not isopod.empty:
+            f = pd.DataFrame(data=isopod.center, columns = list("xy"))
+            if skip > 0:
+                f["frame"] = idx1/skip         
+            else:
+                f["frame"] = idx1        
+            df_isopod=df_isopod.append(f)      
+        frame_out = isopod.draw(frame_out, ["contour", "ellipse", "text"]) #, 
+        
+        # show output image and write to file
         cv2.namedWindow('overlay' ,cv2.WINDOW_NORMAL)
-        cv2.imshow('overlay', frame_out)
+        cv2.imshow('overlay',  frame_out)    
         video_out_writer.write(frame_out)
         
+        # keep stream open
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-        
-    if capture == True:
-        print(mins + ":" + secs + " / " + vid_length + " - " + str(idx1) + " / " + str(int(nframes)) + " - captured" )
-    else:
-        print(mins + ":" + secs + " / " + vid_length + " - " + str(idx1) + " / " + str(int(nframes)))
 
+    # return present time and captured frames 
+    t = video_time(idx1, v.fps)
+    capture_feedback(t.mins, t.secs, idx1, v.length, v.nframes, capture)
+    
+    
 cap.release()
 video_out_writer.release()
 cv2.destroyAllWindows()
 
-#%% movement analysis and plotting
 
+#%% trackpy-routine - trajectories, pictures, dataframe and saving
+            
 # find trajectories - check http://soft-matter.github.io/trackpy/v0.3.0/generated/trackpy.link_df.html for all options
-traj = tp.link_df(df, search_range = 50, memory=300, neighbor_strategy="KDTree", link_strategy="nonrecursive")
-traj_filter = tp.filtering.filter_stubs(traj, threshold=20)
+traj_fish = tp.link_df(df_fish, search_range = 200, memory=50, neighbor_strategy="KDTree", link_strategy="nonrecursive")
+traj_fish_filter = tp.filtering.filter_stubs(traj_fish, threshold=20)
 
-# plot trajectories
-plot = tp.plot_traj(traj, superimpose=arena)
-fig = plot.get_figure()
-fig.savefig(os.path.join(main_dir, video_name + "_trajectories.png"), dpi=300)
+df_isopod_counts = df_isopod["frame"].value_counts()
+df_isopod_filtered = df_isopod.groupby("frame").filter(lambda x: len(x) < 22)  
+traj_isopod = tp.link_df(df_isopod_filtered, search_range = 50, memory=500, neighbor_strategy="KDTree", link_strategy="nonrecursive")
+traj_isopod_filter = tp.filtering.filter_stubs(traj_isopod, threshold=20)
 
-# save trajectories to csv
+# plot fish trajectories
+plot = tp.plot_traj(traj_fish_filter, superimpose=v.frame)
+fig1 = plot.get_figure()
+fig1.savefig(os.path.join(main_dir, video_name + "_fish_trajectories.png"), dpi=300)
+plt.close('all')
 
-traj.to_csv(os.path.join(main_dir, video_name + "_trajectories.csv"), sep='\t')
+# plot isopod trajectories
+plot = tp.plot_traj(traj_isopod_filter, superimpose=v.frame, colorby="particle")
+fig2 = plot.get_figure()
+fig2.savefig(os.path.join(main_dir, video_name + "_isopod_trajectories.png"), dpi=300)
+plt.close('all')
+
+# save isopod trajectories to csv
+traj_fish.to_csv(os.path.join(main_dir, video_name + "_fish_trajectories_full.csv"), sep='\t')
+traj_isopod.to_csv(os.path.join(main_dir, video_name + "_isopod_trajectories_full.csv"), sep='\t')
+
+
