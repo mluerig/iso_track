@@ -21,7 +21,7 @@
 The script uses different *modules* to quantify movement of different animals at the same time. In the given example, the goal is to quantify isopod movement in response to movements of a predatory fish (stickleback). However, the two movement patterns are very different and would be difficult to detect from a single routine. So each animal has its own code-module that contains the necessary adjustments of the detected foreground. 
 
 **Example of iso_track output. Left:** fish movement over 15 minutes (from green to blue: earlier to later in time). Most glitches have been removed to this step. The trajectories can be smoothed (later in R or Python), e.g. by averaging over multiple frames per second. **Right:**  Summary of fish and isopod movement. This figure shows how much isopods (green line: the sum of the movement of all isopods in one second) and fish (red line: mean fish movement in one second). 
-<img src="assets/movement1.png" width="50%" /> <img src="assets/movement2.png" width="50%" /> 
+<img src="assets/movement1.png" width="50%"/><img src="assets/movement2.png" width="50%" /> 
 
 **The code can be easily adapted to quantifiy movement of other animals in different environments. Please feel free to get in touch with me if you need help running the script or have questions about customizing it for your own study-system/organism: [moritz lürig @ eawag](http://www.eawag.ch/en/aboutus/portrait/organisation/staff/profile/moritz-luerig/show/)**
 
