@@ -6,14 +6,13 @@ Version 0.2
 @author: Moritz Lürig
 polygon_drawer is based on Dan Mašek's answer to this SO question https://stackoverflow.com/questions/37099262/drawing-filled-polygon-using-mouse-events-in-open-cv-using-python
 """
+
 from __future__ import division, unicode_literals, print_function  # for compatibility with Python 2 and 3
 import numpy as np
 import cv2
 import math
 import copy
 import os
-
-
 
 #%%
 
