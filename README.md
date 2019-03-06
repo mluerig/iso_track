@@ -1,3 +1,7 @@
+DEVELOPMENT IS DISCONTINUED, SCRIPT IS NOW PART OF [phenopype - a phenotyping pipeline for python](https://github.com/mluerig/phenopype)
+======================================================
+
+
 # iso_track
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
