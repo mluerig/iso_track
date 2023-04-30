@@ -1,4 +1,4 @@
-DEVELOPMENT IS DISCONTINUED, SCRIPT IS NOW PART OF [phenopype - a phenotyping pipeline for python](https://github.com/mluerig/phenopype)
+DEVELOPMENT IS DISCONTINUED, SCRIPT IS NOW PART OF [phenopype - a phenotyping pipeline for python](https://github.com/phenopype/phenopype)
 ======================================================
 
 
